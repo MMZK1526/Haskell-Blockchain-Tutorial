@@ -78,10 +78,7 @@ class GBCShow rep where
   gbcShowList :: rep a -> [(String, String)]
 
   gbcShow :: rep a -> String
-  gbcShow a = showParen notSingleton (intercalate "," (snd <$> sort list) ++) ""
-    where
-      notSingleton = length (take 2 list) == 2
-      list         = gbcShowList a
+  gbcShow a = intercalate "," (snd <$> sort (gbcShowList a))
 
 instance BCShow a => GBCShow (K1 i a) where
   gbcShowList :: K1 i a p -> [(String, String)]
