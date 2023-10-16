@@ -2,7 +2,6 @@ module Model.Block where
 
 import           Data.Aeson (FromJSON, ToJSON)
 import           GHC.Generics
-
 import           Model.BlockHeader
 import           Model.Transaction
 
