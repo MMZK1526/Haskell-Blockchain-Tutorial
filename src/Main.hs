@@ -7,6 +7,9 @@
 
 module Main where
 
+import           BCHashable
+import           BlockHeader
+
 import Data.Aeson (FromJSON, ToJSON)
 import qualified Data.Aeson.KeyMap as JSON
 import qualified Data.Aeson as JSON
@@ -21,33 +24,6 @@ import Data.Word
 import GHC.Generics
 import Text.Printf
 import Data.Ord
-
-data BlockHeader
-  = BlockHeader { difficulty :: Word8
-                , hash :: String
-                , height :: Word
-                , miner :: String
-                , nonce :: Integer
-                , previous_block_header_hash :: String
-                , timestamp :: Word32
-                , transactions_count :: Word8
-                , transactions_merkle_root :: String }
-  deriving (Eq, Generic, FromJSON, ToJSON)
-
-instance Show BlockHeader where
-  show :: BlockHeader -> String
-  show BlockHeader {..}
-    = intercalate "," [ show difficulty
-                      , show height
-                      , miner
-                      , show nonce
-                      , previous_block_header_hash
-                      , show timestamp
-                      , show transactions_count
-                      , transactions_merkle_root ]
-
-hashBlock :: BlockHeader -> ByteString
-hashBlock block = SHA256.hash . C8.pack $ show block
 
 testBlock :: BlockHeader
 testBlock
@@ -99,6 +75,9 @@ instance Show Transaction where
                       , sender
                       , signature
                       , show transaction_fee ]
+
+hashBlock :: BlockHeader -> ByteString
+hashBlock b = SHA256.hash . C8.pack $ show b
 
 hashTransaction :: Transaction -> ByteString
 hashTransaction transaction = SHA256.hash . C8.pack $ show transaction
