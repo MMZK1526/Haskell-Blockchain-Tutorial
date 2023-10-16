@@ -21,7 +21,9 @@ executable tutorial1
     main-is:          Main.hs
     other-modules:
         BCHashable
+        BCEnv
         BCShow
+        Block
         BlockHeader
         Transaction
     default-extensions:
@@ -41,6 +43,5 @@ executable tutorial1
         base ^>=4.17.2.0,
         bytestring >= 0.11.5 && < 0.12,
         cryptohash-sha256 >= 0.11.102 && < 0.12,
-        transformers >= 0.5.6 && < 0.6,
     hs-source-dirs:   src
     default-language: Haskell2010

@@ -4,6 +4,7 @@
 module Main where
 
 import           BCHashable
+import           Block
 import           BlockHeader
 import           Transaction
 
@@ -34,19 +35,11 @@ testBlock
                 , transactions_merkle_root = "0xddba0c2d7d38a9bc8ba357d1fcb4a4be339ab5fddf8cdcc4419970e4746d1f6e"
                 , hash = "0x073c348de2486c616699fcd8267dc895f2d8b43355b126295da92df2961f8a87" }
 
-getBlocks :: IO [(BlockHeader, [Transaction])]
+getBlocks :: IO [Block]
 getBlocks = do
   contents <- BS.readFile "data/blockchain.json"
-  let Just raws = JSON.decodeStrict contents :: Maybe [JSON.Value]
-  let getHeader = \case
-        JSON.Object km -> fromJust $ JSON.lookup "header" km
-  let getTxs = \case
-        JSON.Object km -> fromJust $ JSON.lookup "transactions" km
-  let blockHeaders = (\raw -> case JSON.parse JSON.parseJSON (getHeader raw) of
-            JSON.Success a -> a) <$> raws
-  let txs = (\raw -> case JSON.parse JSON.parseJSON (getTxs raw) of
-            JSON.Success a -> a) <$> raws
-  pure $ zip blockHeaders txs
+  let Just blocks = JSON.decodeStrict contents :: Maybe [Block]
+  pure blocks
 
 getMemPool :: IO [Transaction]
 getMemPool = do
@@ -96,5 +89,5 @@ main = do
   pool <- getMemPool
   print $ length pool
   blocks <- getBlocks
-  let (b, tx) = last blocks
+  let Block b ts = last blocks
   print $ mine pool b
