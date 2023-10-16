@@ -64,11 +64,8 @@ mkMerkle txs = go txHashes
     go [root]    = root
     go hs        = go $ worker hs
     worker []    = []
-    worker [rem] = [prettyPrint . SHA256.hash $ C8.pack (zero ++ rem)]
-    worker (h : h' : hs) = let [s, s'] = sort [h, h'] in prettyPrint (SHA256.hash $ C8.pack (s ++ s')) : worker hs
-
-prettyPrint :: ByteString -> String
-prettyPrint = ("0x" ++) . concatMap (printf "%02x") . BS.unpack
+    worker [rem] = [bcHash (zero ++ rem)]
+    worker (h : h' : hs) = let [s, s'] = sort [h, h'] in bcHash (s ++ s') : worker hs
 
 mine :: [Transaction] -> BlockHeader -> BlockHeader
 mine txs b = go nextRaw
