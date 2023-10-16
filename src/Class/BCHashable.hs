@@ -1,6 +1,6 @@
-module BCHashable where
+module Class.BCHashable where
 
-import           BCShow
+import           Class.BCShow
 import qualified Crypto.Hash.SHA256 as SHA256
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as C8

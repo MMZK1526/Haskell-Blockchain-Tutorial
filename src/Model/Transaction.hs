@@ -1,6 +1,6 @@
-module Transaction where
+module Model.Transaction where
 
-import           BCShow
+import           Class.BCShow
 import           Data.Aeson (FromJSON, ToJSON)
 import           Data.Word
 import           GHC.Generics

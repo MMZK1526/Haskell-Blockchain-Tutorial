@@ -20,12 +20,12 @@ extra-source-files:
 executable tutorial1
     main-is:          Main.hs
     other-modules:
-        BCHashable
-        BCEnv
-        BCShow
-        Block
-        BlockHeader
-        Transaction
+        Class.BCHashable
+        Class.BCShow
+        Model.BCEnv
+        Model.Block
+        Model.BlockHeader
+        Model.Transaction
     default-extensions:
         DataKinds
         DeriveAnyClass

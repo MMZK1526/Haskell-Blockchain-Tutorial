@@ -1,12 +1,9 @@
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module Main where
 
-import           BCHashable
-import           Block
-import           BlockHeader
-import           Transaction
+import           Class.BCHashable
+import           Model.Block
+import           Model.BlockHeader
+import           Model.Transaction
 
 import Data.Aeson (FromJSON, ToJSON)
 import qualified Data.Aeson.KeyMap as JSON

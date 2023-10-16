@@ -1,4 +1,4 @@
-module BCShow where
+module Class.BCShow where
 
 import           Data.Int
 import           Data.List
