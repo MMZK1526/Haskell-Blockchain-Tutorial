@@ -21,6 +21,7 @@ executable tutorial1
     main-is:          Main.hs
     other-modules:
         BCHashable
+        BCShow
         BlockHeader
         Transaction
     default-extensions:

@@ -1,10 +1,6 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
-
 module BlockHeader where
 
-import           BCHashable
+import           BCShow
 import           Data.Aeson (FromJSON, ToJSON)
 import           Data.Word
 import           GHC.Generics

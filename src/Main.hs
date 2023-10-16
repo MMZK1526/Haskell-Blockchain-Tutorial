@@ -1,14 +1,11 @@
-{-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module Main where
 
 import           BCHashable
 import           BlockHeader
+import           Transaction
 
 import Data.Aeson (FromJSON, ToJSON)
 import qualified Data.Aeson.KeyMap as JSON
@@ -57,38 +54,13 @@ getMemPool = do
   let Just txs = JSON.decodeStrict contents :: Maybe [Transaction]
   pure $ sortOn (Down . transaction_fee) txs
 
-data Transaction
-  = Transaction { amount :: Word
-                , lock_time :: Word32
-                , receiver :: String
-                , sender :: String
-                , signature :: String
-                , transaction_fee :: Word }
-  deriving (Eq, Generic, FromJSON, ToJSON)
-
-instance Show Transaction where
-  show :: Transaction -> String
-  show Transaction {..}
-    = intercalate "," [ show amount
-                      , show lock_time
-                      , receiver
-                      , sender
-                      , signature
-                      , show transaction_fee ]
-
-hashBlock :: BlockHeader -> ByteString
-hashBlock b = SHA256.hash . C8.pack $ show b
-
-hashTransaction :: Transaction -> ByteString
-hashTransaction transaction = SHA256.hash . C8.pack $ show transaction
-
 zero :: String
 zero = "0x" ++ replicate 64 '0'
 
 mkMerkle :: [Transaction] -> String
 mkMerkle txs = go txHashes
   where
-    txHashes     = prettyPrint . hashTransaction <$> txs
+    txHashes     = bcHash <$> txs
     go [root]    = root
     go hs        = go $ worker hs
     worker []    = []
@@ -99,13 +71,13 @@ prettyPrint :: ByteString -> String
 prettyPrint = ("0x" ++) . concatMap (printf "%02x") . BS.unpack
 
 mine :: [Transaction] -> BlockHeader -> BlockHeader
-mine txs b = nextRaw
+mine txs b = go nextRaw
   where
     go rawBlock = if take (2 + d) hashValue == "0x" ++ replicate d '0'
         then rawBlock { hash = hashValue }
         else go $ rawBlock { nonce = nonce rawBlock + 1 }
       where
-        hashValue = prettyPrint (hashBlock rawBlock)
+        hashValue = bcHash rawBlock
     txs' = filter (\tx -> lock_time tx <= newTimestamp) txs
     d :: Num a => a
     d = fromIntegral $ difficulty b
