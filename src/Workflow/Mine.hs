@@ -2,7 +2,6 @@ module Workflow.Mine where
 
 import           Class.BCHashable
 import           Control.Effect.State
-import           Control.Effect.Lift
 import           Data.List
 import           Model.BCEnv
 import           Model.Block
