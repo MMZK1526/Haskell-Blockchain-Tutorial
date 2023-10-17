@@ -30,6 +30,7 @@ executable tutorial1
         Workflow.Mine
     default-extensions:
         BlockArguments
+        ConstraintKinds
         DataKinds
         DeriveAnyClass
         DeriveGeneric

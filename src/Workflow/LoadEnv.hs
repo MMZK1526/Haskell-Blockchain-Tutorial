@@ -28,10 +28,7 @@ getMemPool = do
 getBCEnv :: IO BCEnv
 getBCEnv = liftM2 BCEnv getBlocks getMemPool
 
-withEnv :: forall a
-         . ( forall sig m
-           . (Has (State BCEnv) sig m, Has (Lift IO) sig m) => m a )
-        -> IO a
+withEnv :: forall a. (forall sig m. MonadBCEnv sig m => m a) -> IO a
 withEnv action = do
   env <- getBCEnv
   runM $ evalState env (action :: StateC BCEnv (LiftC IO) a)

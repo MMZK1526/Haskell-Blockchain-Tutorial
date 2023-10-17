@@ -9,8 +9,7 @@ import           Model.Block
 import           Model.BlockHeader
 import           Model.Transaction
 
-pickTransactions :: (Has (State BCEnv) sig m, Has (Lift IO) sig m)
-                 => BlockHeader -> m [Transaction]
+pickTransactions :: MonadBCEnv sig m => BlockHeader -> m [Transaction]
 pickTransactions bh = do
   pool <- filter (\tx -> tx.lock_time <= bh.timestamp + 10) <$> gets mempool
   let (chosen, rest) = splitAt 100 pool
@@ -42,7 +41,7 @@ nextBlockMined bh
     dfct    = fromIntegral bh.difficulty
     nextRaw = bh { nonce = 0 }
 
-mineBlock :: (Has (State BCEnv) sig m, Has (Lift IO) sig m) => m BlockHeader
+mineBlock :: MonadBCEnv sig m => m BlockHeader
 mineBlock = do
   latestBh <- (.header) . head <$> gets blockchains
   txs      <- pickTransactions latestBh
