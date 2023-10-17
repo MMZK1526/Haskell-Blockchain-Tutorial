@@ -26,6 +26,7 @@ executable tutorial1
         Model.Block
         Model.BlockHeader
         Model.Transaction
+        Workflow.LoadEnv
     default-extensions:
         DataKinds
         DeriveAnyClass
@@ -35,6 +36,7 @@ executable tutorial1
         FlexibleContexts
         FlexibleInstances
         InstanceSigs
+        ScopedTypeVariables
         TypeApplications
         TypeOperators
         UndecidableInstances
@@ -43,5 +45,6 @@ executable tutorial1
         base ^>=4.17.2.0,
         bytestring >= 0.11.5 && < 0.12,
         cryptohash-sha256 >= 0.11.102 && < 0.12,
+        fused-effects >= 1.1.2 && < 1.2,
     hs-source-dirs:   src
     default-language: Haskell2010

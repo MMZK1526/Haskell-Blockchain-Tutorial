@@ -19,6 +19,7 @@ import Data.Word
 import GHC.Generics
 import Text.Printf
 import Data.Ord
+import Class.BCShow
 
 testBlock :: BlockHeader
 testBlock
@@ -87,4 +88,6 @@ main = do
   print $ length pool
   blocks <- getBlocks
   let Block b ts = last blocks
-  print $ mine pool b
+  putStrLn $ bcShow b
+  mapM_ (putStrLn . bcShow) ts
+  -- print $ mine pool b
