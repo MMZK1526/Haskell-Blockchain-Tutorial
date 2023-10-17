@@ -20,9 +20,10 @@ data Transaction
 mkMerkle :: [Transaction] -> String
 mkMerkle txs = go txHashes
   where
-    txHashes     = bcHash <$> txs
-    go [root]    = root
-    go hs        = go $ worker hs
-    worker []    = []
-    worker [rem] = [bcHash (zero ++ rem)]
-    worker (h : h' : hs) = let [s, s'] = sort [h, h'] in bcHash (s ++ s') : worker hs
+    txHashes             = bcHash <$> txs
+    go [root]            = root
+    go hs                = go $ worker hs
+    worker []            = []
+    worker [rem]         = [bcHash (zero ++ rem)]
+    worker (h : h' : hs) = let [s, s'] = sort [h, h']
+                           in  bcHash (s ++ s') : worker hs

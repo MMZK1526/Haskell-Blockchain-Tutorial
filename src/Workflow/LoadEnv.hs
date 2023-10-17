@@ -17,7 +17,7 @@ getBlocks :: IO [Block]
 getBlocks = do
   contents <- BS.readFile "data/blockchain.json"
   let Just blocks = JSON.decodeStrict contents :: Maybe [Block]
-  pure blocks
+  pure $ reverse blocks
 
 getMemPool :: IO [Transaction]
 getMemPool = do

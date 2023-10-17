@@ -27,6 +27,7 @@ executable tutorial1
         Model.BlockHeader
         Model.Transaction
         Workflow.LoadEnv
+        Workflow.Mine
     default-extensions:
         BlockArguments
         DataKinds
@@ -37,10 +38,13 @@ executable tutorial1
         FlexibleContexts
         FlexibleInstances
         InstanceSigs
+        OverloadedRecordDot
         ScopedTypeVariables
         TypeApplications
         TypeOperators
         UndecidableInstances
+    other-extensions:
+        Rank2Types
     build-depends:
         aeson >= 2.2.1 && < 2.3,
         base ^>=4.17.2.0,

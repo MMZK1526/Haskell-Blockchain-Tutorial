@@ -1,29 +1,9 @@
 module Main where
 
-import           Class.BCHashable
-import           Model.Block
+import           Control.Effect.Lift
+import           Workflow.Mine
 import           Model.BlockHeader
-import           Model.Transaction
-
-import Data.Aeson (FromJSON, ToJSON)
-import qualified Data.Aeson.KeyMap as JSON
-import qualified Data.Aeson as JSON
-import qualified Data.Aeson.Types as JSON
-import qualified Crypto.Hash.SHA256 as SHA256
-import Data.ByteString (ByteString)
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Char8 as C8
-import Data.List
-import Data.Maybe
-import Data.Word
-import GHC.Generics
-import Text.Printf
-import Data.Ord
-import Class.BCShow
-import Model.BCEnv
-import Workflow.LoadEnv
-import Control.Effect.State
-import Control.Effect.Lift
+import           Workflow.LoadEnv
 
 testBlock :: BlockHeader
 testBlock
@@ -37,35 +17,7 @@ testBlock
                 , transactions_merkle_root = "0xddba0c2d7d38a9bc8ba357d1fcb4a4be339ab5fddf8cdcc4419970e4746d1f6e"
                 , hash = "0x073c348de2486c616699fcd8267dc895f2d8b43355b126295da92df2961f8a87" }
 
-mine :: [Transaction] -> BlockHeader -> BlockHeader
-mine txs b = go nextRaw
-  where
-    go rawBlock = if take (2 + d) hashValue == "0x" ++ replicate d '0'
-        then rawBlock { hash = hashValue }
-        else go $ rawBlock { nonce = nonce rawBlock + 1 }
-      where
-        hashValue = bcHash rawBlock
-    txs' = filter (\tx -> lock_time tx <= newTimestamp) txs
-    d :: Num a => a
-    d = fromIntegral $ difficulty b
-    selctedTxs = take 100 txs'
-    newTimestamp = timestamp b + 10
-    nextRaw = BlockHeader { timestamp = newTimestamp
-                          , height = height b + 1
-                          , previous_block_header_hash = hash b
-                          , transactions_merkle_root = mkMerkle selctedTxs
-                          , transactions_count = genericLength selctedTxs
-                          , nonce = 0
-                          , hash = zero
-                          , miner = zero
-                          , difficulty = if height nextRaw `mod` 50 == 0 && d < 6 then d + 1 else d
-                          }
-
 main :: IO ()
 main = withEnv do
-  blocks <- gets blockchains
-  pool   <- gets mempool
-  let Block b ts = last blocks
-  sendIO . putStrLn $ bcShow b
-  mapM_ (sendIO . putStrLn . bcShow) ts
-  sendIO . print $ mine pool b
+  newBlock <- mineBlock
+  sendIO $ print newBlock
