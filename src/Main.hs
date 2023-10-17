@@ -20,6 +20,10 @@ import GHC.Generics
 import Text.Printf
 import Data.Ord
 import Class.BCShow
+import Model.BCEnv
+import Workflow.LoadEnv
+import Control.Effect.State
+import Control.Effect.Lift
 
 testBlock :: BlockHeader
 testBlock
@@ -32,31 +36,6 @@ testBlock
                 , transactions_count = 97
                 , transactions_merkle_root = "0xddba0c2d7d38a9bc8ba357d1fcb4a4be339ab5fddf8cdcc4419970e4746d1f6e"
                 , hash = "0x073c348de2486c616699fcd8267dc895f2d8b43355b126295da92df2961f8a87" }
-
-getBlocks :: IO [Block]
-getBlocks = do
-  contents <- BS.readFile "data/blockchain.json"
-  let Just blocks = JSON.decodeStrict contents :: Maybe [Block]
-  pure blocks
-
-getMemPool :: IO [Transaction]
-getMemPool = do
-  contents <- BS.readFile "data/mempool.json"
-  let Just txs = JSON.decodeStrict contents :: Maybe [Transaction]
-  pure $ sortOn (Down . transaction_fee) txs
-
-zero :: String
-zero = "0x" ++ replicate 64 '0'
-
-mkMerkle :: [Transaction] -> String
-mkMerkle txs = go txHashes
-  where
-    txHashes     = bcHash <$> txs
-    go [root]    = root
-    go hs        = go $ worker hs
-    worker []    = []
-    worker [rem] = [bcHash (zero ++ rem)]
-    worker (h : h' : hs) = let [s, s'] = sort [h, h'] in bcHash (s ++ s') : worker hs
 
 mine :: [Transaction] -> BlockHeader -> BlockHeader
 mine txs b = go nextRaw
@@ -83,11 +62,10 @@ mine txs b = go nextRaw
                           }
 
 main :: IO ()
-main = do
-  pool <- getMemPool
-  print $ length pool
-  blocks <- getBlocks
+main = withEnv do
+  blocks <- gets blockchains
+  pool   <- gets mempool
   let Block b ts = last blocks
-  putStrLn $ bcShow b
-  mapM_ (putStrLn . bcShow) ts
-  -- print $ mine pool b
+  sendIO . putStrLn $ bcShow b
+  mapM_ (sendIO . putStrLn . bcShow) ts
+  sendIO . print $ mine pool b

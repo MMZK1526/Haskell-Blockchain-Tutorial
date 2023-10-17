@@ -13,3 +13,6 @@ instance BCShow a => BCHashable a where
   bcHash :: a -> String
   bcHash = ("0x" ++) . concatMap (printf "%02x") . BS.unpack
          . SHA256.hash . C8.pack . bcShow
+
+zero :: String
+zero = "0x" ++ replicate 64 '0'

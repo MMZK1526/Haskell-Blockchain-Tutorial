@@ -28,6 +28,7 @@ executable tutorial1
         Model.Transaction
         Workflow.LoadEnv
     default-extensions:
+        BlockArguments
         DataKinds
         DeriveAnyClass
         DeriveGeneric
