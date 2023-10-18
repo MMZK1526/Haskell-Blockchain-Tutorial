@@ -54,3 +54,46 @@ executable tutorial1
         fused-effects >= 1.1.2 && < 1.2,
     hs-source-dirs:   src
     default-language: Haskell2010
+
+
+test-suite test
+    main-is:          Spec.hs
+    type:             exitcode-stdio-1.0
+    other-modules:
+        Class.BCHashable
+        Class.BCShow
+        Model.BCEnv
+        Model.Block
+        Model.BlockHeader
+        Model.Transaction
+        Workflow.LoadEnv
+        Workflow.Mine
+    default-extensions:
+        BlockArguments
+        ConstraintKinds
+        DataKinds
+        DeriveAnyClass
+        DeriveGeneric
+        DerivingStrategies
+        DefaultSignatures
+        FlexibleContexts
+        FlexibleInstances
+        InstanceSigs
+        OverloadedRecordDot
+        ScopedTypeVariables
+        TypeApplications
+        TypeOperators
+        UndecidableInstances
+    other-extensions:
+        Rank2Types
+    build-depends:
+        aeson >= 2.2.1 && < 2.3,
+        base ^>=4.17.2.0,
+        bytestring >= 0.11.5 && < 0.12,
+        cryptohash-sha256 >= 0.11.102 && < 0.12,
+        fused-effects >= 1.1.2 && < 1.2,
+        hspec >= 2.11.6 && < 2.12,
+    hs-source-dirs:
+        src
+        test
+    default-language: Haskell2010
