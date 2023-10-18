@@ -48,7 +48,7 @@ executable tutorial1
         Rank2Types
     build-depends:
         aeson >= 2.2.1 && < 2.3,
-        base ^>=4.17.2.0,
+        base >= 4.17.2.0 && < 5,
         bytestring >= 0.11.5 && < 0.12,
         cryptohash-sha256 >= 0.11.102 && < 0.12,
         fused-effects >= 1.1.2 && < 1.2,
