@@ -26,6 +26,7 @@ executable playground
         Model.Block
         Model.BlockHeader
         Model.Transaction
+        Model.Wallet
         Workflow.LoadEnv
         Workflow.Mine
     default-extensions:
@@ -50,6 +51,7 @@ executable playground
         aeson >= 2.2.1 && < 2.3,
         base >= 4.17.2.0 && < 5,
         bytestring >= 0.11.5 && < 0.12,
+        containers >= 0.6.7 && < 0.7,
         cryptohash-sha256 >= 0.11.102 && < 0.12,
         fused-effects >= 1.1.2 && < 1.2,
     hs-source-dirs:   src
@@ -66,6 +68,7 @@ test-suite test
         Model.Block
         Model.BlockHeader
         Model.Transaction
+        Model.Wallet
         Workflow.LoadEnv
         Workflow.Mine
     default-extensions:
@@ -90,6 +93,7 @@ test-suite test
         aeson >= 2.2.1 && < 2.3,
         base >= 4.17.2.0 && < 5,
         bytestring >= 0.11.5 && < 0.12,
+        containers >= 0.6.7 && < 0.7,
         cryptohash-sha256 >= 0.11.102 && < 0.12,
         fused-effects >= 1.1.2 && < 1.2,
         hspec >= 2.11.6 && < 2.12,

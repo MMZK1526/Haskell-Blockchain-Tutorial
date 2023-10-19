@@ -12,6 +12,7 @@ import           Data.Ord
 import           Model.BCEnv
 import           Model.Block
 import           Model.Transaction
+import           Model.Wallet
 
 getBlocks :: IO [Block]
 getBlocks = do
@@ -25,8 +26,14 @@ getMemPool = do
   let Just txs = JSON.decodeStrict contents :: Maybe [Transaction]
   pure $ sortOn (Down . transaction_fee) txs
 
+getWallet :: IO Wallet
+getWallet = do
+  contents <- BS.readFile "data/keys.json"
+  let Just wallet = JSON.decodeStrict contents :: Maybe Wallet
+  pure wallet
+
 getBCEnv :: IO BCEnv
-getBCEnv = liftM2 BCEnv getBlocks getMemPool
+getBCEnv = liftM3 BCEnv getBlocks getMemPool getWallet
 
 withEnv :: forall a. (forall sig m. MonadBCEnv sig m => m a) -> IO a
 withEnv action = do

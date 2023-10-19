@@ -6,10 +6,12 @@ import           Data.Aeson (FromJSON, ToJSON)
 import           GHC.Generics
 import           Model.Block
 import           Model.Transaction
+import           Model.Wallet
 
 data BCEnv
   = BCEnv { blockchains :: [Block]
-          , mempool     :: [Transaction] }
+          , mempool     :: [Transaction]
+          , wallet      :: Wallet }
   deriving stock (Eq, Generic, Show)
   deriving anyclass (FromJSON, ToJSON)
 
