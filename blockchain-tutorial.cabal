@@ -17,7 +17,7 @@ extra-source-files:
     data/keys.json
     data/mempool.json
 
-executable tutorial1
+executable playground
     main-is:          Main.hs
     other-modules:
         Class.BCHashable
