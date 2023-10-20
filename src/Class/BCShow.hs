@@ -1,5 +1,6 @@
 module Class.BCShow where
 
+import           Control.Monad
 import           Data.Int
 import           Data.List
 import           Data.Word
@@ -86,7 +87,7 @@ instance BCShow a => GBCShow (K1 i a) where
 
 instance (GBCShow a, Selector s) => GBCShow (S1 s a) where
   gbcShowList :: S1 s a p -> [(String, String)]
-  gbcShowList m@(M1 a) = [(selName m, gbcShow a)]
+  gbcShowList m@(M1 a) = (selName m, gbcShow a) <$ guard (selName m /= "hash")
 
 instance GBCShow a => GBCShow (C1 s a) where
   gbcShowList :: C1 s a p -> [(String, String)]

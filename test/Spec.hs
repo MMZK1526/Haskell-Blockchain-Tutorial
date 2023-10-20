@@ -6,12 +6,10 @@ import           Model.BlockHeader
 import           Model.Transaction
 import           Test.Hspec
 import           Workflow.LoadEnv
-import Class.BCShow
 
 main :: IO ()
 main = hspec do
   env <- runIO getBCEnv
-  runIO $ putStrLn $ bcShow (last env.blockchains).header
   describe "Block Hash Tests" do
     forM_ env.blockchains \b -> it ("Block " ++ show b.header.height) do
       bcHash b.header `shouldBe` b.header.hash
