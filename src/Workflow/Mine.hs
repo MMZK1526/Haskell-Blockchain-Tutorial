@@ -7,6 +7,7 @@ import           Model.BCEnv
 import           Model.Block
 import           Model.BlockHeader
 import           Model.Transaction
+import           Model.Wallet
 
 pickTransactions :: MonadBCEnv sig m => BlockHeader -> m [Transaction]
 pickTransactions bh = do
@@ -15,14 +16,14 @@ pickTransactions bh = do
   modify (\env -> env { mempool = rest })
   pure chosen
 
-nextBlockRaw :: [Transaction] -> BlockHeader -> BlockHeader
-nextBlockRaw pool bh =
+nextBlockRaw :: String -> [Transaction] -> BlockHeader -> BlockHeader
+nextBlockRaw miner pool bh =
   BlockHeader { height = bh.height + 1
               , timestamp = bh.timestamp + 10
               , previous_block_header_hash = bh.hash
               , transactions_merkle_root = mkMerkle pool
               , transactions_count = genericLength pool
-              , miner = zero
+              , miner = miner
               , nonce = 0
               , hash = zero
               , difficulty = if bh.height `mod` 50 == 0 && bh.difficulty < 6
@@ -44,6 +45,7 @@ mineBlock :: MonadBCEnv sig m => m BlockHeader
 mineBlock = do
   latestBh <- (.header) . head <$> gets blockchains
   txs      <- pickTransactions latestBh
-  let newBh = nextBlockMined $ nextBlockRaw txs latestBh
+  miner    <- pickFirstWalletAddr <$> gets wallet
+  let newBh = nextBlockMined $ nextBlockRaw miner txs latestBh
   modify (\env -> env { blockchains = Block newBh txs : blockchains env })
   pure newBh
