@@ -41,11 +41,14 @@ nextBlockMined bh
     dfct    = fromIntegral bh.difficulty
     nextRaw = bh { nonce = 0 }
 
-mineBlock :: MonadBCEnv sig m => m BlockHeader
-mineBlock = do
+mineBlockAs :: MonadBCEnv sig m => (BCEnv -> String) -> m BlockHeader
+mineBlockAs selector = do
   latestBh <- (.header) . head <$> gets blockchains
   txs      <- pickTransactions latestBh
-  miner    <- pickFirstWalletAddr <$> gets wallet
+  miner    <- gets selector
   let newBh = nextBlockMined $ nextBlockRaw miner txs latestBh
   modify (\env -> env { blockchains = Block newBh txs : blockchains env })
   pure newBh
+
+mineBlock :: MonadBCEnv sig m => m BlockHeader
+mineBlock = mineBlockAs (pickFirstWalletAddr . wallet)
