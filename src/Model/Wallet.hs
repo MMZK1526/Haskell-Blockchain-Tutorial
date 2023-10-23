@@ -11,3 +11,4 @@ newtype Wallet = Wallet (Map String String)
 
 pickFirstWalletAddr :: Wallet -> String
 pickFirstWalletAddr (Wallet w) = fst $ M.elemAt 0 w
+{-# INLINE pickFirstWalletAddr #-}

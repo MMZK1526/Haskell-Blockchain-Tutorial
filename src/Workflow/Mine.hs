@@ -15,6 +15,7 @@ pickTransactions bh = do
   let (chosen, rest) = splitAt 100 pool
   modify (\env -> env { mempool = rest })
   pure chosen
+{-# INLINE pickTransactions #-}
 
 nextBlockRaw :: String -> [Transaction] -> BlockHeader -> BlockHeader
 nextBlockRaw miner pool bh =
@@ -30,6 +31,7 @@ nextBlockRaw miner pool bh =
                 then bh.difficulty + 1
                 else bh.difficulty
               }
+{-# INLINE nextBlockRaw #-}
 
 nextBlockMined :: BlockHeader -> BlockHeader
 nextBlockMined bh
@@ -49,6 +51,8 @@ mineBlockAs selector = do
   let newBh = nextBlockMined $ nextBlockRaw miner txs latestBh
   modify (\env -> env { blockchains = Block newBh txs : blockchains env })
   pure newBh
+{-# INLINE mineBlockAs #-}
 
 mineBlock :: MonadBCEnv sig m => m BlockHeader
 mineBlock = mineBlockAs (pickFirstWalletAddr . wallet)
+{-# INLINE mineBlock #-}

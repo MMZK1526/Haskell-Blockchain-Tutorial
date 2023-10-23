@@ -19,23 +19,28 @@ getBlocks = do
   contents <- BS.readFile "data/blockchain.json"
   let Just blocks = JSON.decodeStrict contents :: Maybe [Block]
   pure $ reverse blocks
+{-# INLINE getBlocks #-}
 
 getMemPool :: IO [Transaction]
 getMemPool = do
   contents <- BS.readFile "data/mempool.json"
   let Just txs = JSON.decodeStrict contents :: Maybe [Transaction]
   pure $ sortOn (Down . transaction_fee) txs
+{-# INLINE getMemPool #-}
 
 getWallet :: IO Wallet
 getWallet = do
   contents <- BS.readFile "data/keys.json"
   let Just wallet = JSON.decodeStrict contents :: Maybe Wallet
   pure wallet
+{-# INLINE getWallet #-}
 
 getBCEnv :: IO BCEnv
 getBCEnv = liftM3 BCEnv getBlocks getMemPool getWallet
+{-# INLINE getBCEnv #-}
 
 withEnv :: forall a. (forall sig m. MonadBCEnv sig m => m a) -> IO a
 withEnv action = do
   env <- getBCEnv
   runM $ evalState env (action :: StateC BCEnv (LiftC IO) a)
+{-# INLINE withEnv #-}

@@ -27,3 +27,4 @@ mkMerkle txs = go txHashes
     worker [rem]         = [bcHash (zero ++ rem)]
     worker (h : h' : hs) = let [s, s'] = sort [h, h']
                            in  bcHash (s ++ s') : worker hs
+{-# INLINE mkMerkle #-}
