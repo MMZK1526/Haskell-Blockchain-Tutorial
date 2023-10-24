@@ -6,7 +6,7 @@ import           Model.BlockHeader
 import           Model.Transaction
 
 data Block
-  = Block { header       :: BlockHeader
+  = Block { header :: BlockHeader
           , transactions :: [Transaction] }
   deriving stock (Eq, Generic, Show)
   deriving anyclass (FromJSON, ToJSON)

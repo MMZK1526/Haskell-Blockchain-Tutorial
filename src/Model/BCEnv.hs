@@ -10,8 +10,8 @@ import           Model.Wallet
 
 data BCEnv
   = BCEnv { blockchains :: [Block]
-          , mempool     :: [Transaction]
-          , wallet      :: Wallet }
+          , mempool :: [Transaction]
+          , wallet :: Wallet }
   deriving stock (Eq, Generic, Show)
   deriving anyclass (FromJSON, ToJSON)
 
