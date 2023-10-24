@@ -11,9 +11,10 @@ import           Model.Wallet
 
 pickTransactions :: MonadBCEnv sig m => BlockHeader -> m [Transaction]
 pickTransactions bh = do
-  pool <- filter (\tx -> tx.lock_time <= bh.timestamp + 10) <$> gets mempool
+  (pool, bad) <- partition ((<= bh.timestamp + 10) . (.lock_time))
+             <$> gets mempool
   let (chosen, rest) = splitAt 100 pool
-  modify (\env -> env { mempool = rest })
+  modify (\env -> env { mempool = rest ++ bad })
   pure chosen
 {-# INLINE pickTransactions #-}
 
